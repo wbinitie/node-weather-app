@@ -15,11 +15,20 @@ const geocode = (address, callback) => {
       const {
         center: [longitude, latitude],
         place_name: location,
+        context,
       } = response.body.features[0];
+      const newContext = () => {
+        for (let a of context) {
+          if (a["id"].includes("country")) {
+            return a.short_code;
+          }
+        }
+      };
       callback(undefined, {
         latitude,
         longitude,
         location,
+        countryCode: newContext(),
       });
     }
   });

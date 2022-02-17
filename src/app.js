@@ -42,24 +42,28 @@ app.get("/weather", (req, res) => {
       Error: "Please enter a valid address",
     });
   }
-  geocode(address, (error, { latitude, longitude, location } = {}) => {
-    if (error) {
-      return res.send({
-        error,
-      });
-    }
-    forecast(latitude, longitude, (error, forecast) => {
+  geocode(
+    address,
+    (error, { latitude, longitude, location, countryCode } = {}) => {
       if (error) {
         return res.send({
           error,
         });
       }
-      res.send({
-        location,
-        forecast,
+      forecast(latitude, longitude, (error, forecast) => {
+        if (error) {
+          return res.send({
+            error,
+          });
+        }
+        res.send({
+          location,
+          forecast,
+          countryCode,
+        });
       });
-    });
-  });
+    }
+  );
 });
 app.get("/help/*", (req, res) => {
   res.render("404Page", {
@@ -76,5 +80,5 @@ app.get("*", (req, res) => {
   });
 });
 app.listen(port, () => {
-  console.log("server is running and listening on port 3000");
+  console.log("server is running and listening on port " + port);
 });
